@@ -1,0 +1,1 @@
+"""Facebook affiliate scanner package."""

@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+
+# Logs
+logs/
+*.log
+
+# Local runtime data (scanner workflow)
+data/inbox/
+data/processing/
+data/archive/
+data/error/
+data/output/
+
+# Local artifacts
+*.xlsx
+*.csv
+
+# IDE
+.idea/
+.vscode/
