@@ -11,7 +11,12 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 
-BASE_DIR = Path(__file__).parent
+def _base_dir() -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(sys._MEIPASS)
+    return Path(__file__).parent
+
+BASE_DIR = _base_dir()
 CONFIG_PATH = BASE_DIR / "config.json"
 
 

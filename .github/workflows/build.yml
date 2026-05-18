@@ -24,7 +24,7 @@ jobs:
 
       - name: Build EXE
         run: |
-          pyinstaller -F -w gui.py
+          pyinstaller -F -w --add-data "config.json;." gui.py
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
