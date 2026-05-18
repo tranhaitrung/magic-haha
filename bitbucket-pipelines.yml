@@ -7,11 +7,14 @@ pipelines:
       - step: &build-installer
           name: Build Windows Installer (Linux cloud runner)
           script:
+            # 0. Cai cac tool can thiet
+            - apt-get update -qq && apt-get install -y -qq wget unzip
+
             # 1. Tai Python Windows embeddable (chi la zip, khong can chay)
             - |
               PY_VER="3.11.9"
               PY_ZIP="python-${PY_VER}-embed-amd64.zip"
-              curl -sSL "https://www.python.org/ftp/python/${PY_VER}/${PY_ZIP}" -o "${PY_ZIP}"
+              wget -q "https://www.python.org/ftp/python/${PY_VER}/${PY_ZIP}"
               unzip -q "${PY_ZIP}" -d python/
               rm "${PY_ZIP}"
 
@@ -19,7 +22,7 @@ pipelines:
             - sed -i 's/#import site/import site/' python/python311._pth
 
             # 3. Tai get-pip.py (bundle vao installer, user chay o may Windows)
-            - curl -sSL https://bootstrap.pypa.io/get-pip.py -o python/get-pip.py
+            - wget -q https://bootstrap.pypa.io/get-pip.py -O python/get-pip.py
 
             # 4. Compile installer bang Inno Setup (qua Wine, co san trong amake/innosetup)
             - mkdir -p dist
