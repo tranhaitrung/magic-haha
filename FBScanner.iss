@@ -50,7 +50,7 @@ Source: "setup_env.bat";      DestDir: "{app}"; Flags: ignoreversion
 ; Source modules
 Source: "src\*";              DestDir: "{app}\src"; Flags: ignoreversion recursesubdirs createallsubdirs
 
-; Python embedded + dependencies + Chromium (phai chay setup_env.bat truoc)
+; Python embedded (khong co deps/Chromium - setup_env.bat tu dong cai khi chay lan dau)
 Source: "python\*";           DestDir: "{app}\python"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Dirs]

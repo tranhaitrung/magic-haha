@@ -44,16 +44,19 @@ REM [2/5] Cai pip vao Python embedded
 REM -------------------------------------------------------
 echo [2/5] Cai pip...
 
-set GETPIP_URL=https://bootstrap.pypa.io/get-pip.py
-powershell -Command "& { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%GETPIP_URL%' -OutFile 'get-pip.py' -UseBasicParsing }"
-if errorlevel 1 (
-    echo [LOI] Khong tai duoc get-pip.py.
-    pause
-    exit /b 1
+REM Uu tien dung get-pip.py da bundle san, neu khong co thi tai ve
+if exist "python\get-pip.py" (
+    python\python.exe python\get-pip.py --quiet
+) else (
+    set GETPIP_URL=https://bootstrap.pypa.io/get-pip.py
+    powershell -Command "& { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%GETPIP_URL%' -OutFile 'python\get-pip.py' -UseBasicParsing }"
+    if errorlevel 1 (
+        echo [LOI] Khong tai duoc get-pip.py. Kiem tra ket noi mang.
+        pause
+        exit /b 1
+    )
+    python\python.exe python\get-pip.py --quiet
 )
-
-python\python.exe get-pip.py --quiet
-del /f /q get-pip.py
 
 if errorlevel 1 (
     echo [LOI] Cai pip that bai.
