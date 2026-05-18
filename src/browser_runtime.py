@@ -6,6 +6,18 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
+def _check_chrome_installed(pw) -> None:
+    try:
+        browser = pw.chromium.launch(channel="chrome", headless=True)
+        browser.close()
+    except Exception:
+        raise RuntimeError(
+            "Không tìm thấy Google Chrome trên máy tính.\n"
+            "Vui lòng cài đặt Chrome từ: https://www.google.com/chrome\n"
+            "sau đó khởi động lại ứng dụng."
+        )
+
+
 WEBDRIVER_OVERRIDE_SCRIPT = """
 Object.defineProperty(navigator, 'webdriver', {
     get: () => undefined,
@@ -37,8 +49,11 @@ class BrowserRuntime:
         from playwright.sync_api import sync_playwright
 
         self._playwright = sync_playwright().start()
+        # Verify Chrome is accessible before attempting launch
+        _check_chrome_installed(self._playwright)
         launch_options = {
             "headless": self.settings.headless,
+            "channel": "chrome",
         }
         context_options = {
             "user_agent": self.settings.user_agent,

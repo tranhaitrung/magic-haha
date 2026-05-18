@@ -66,9 +66,9 @@ if errorlevel 1 (
 
 :install_deps
 REM -------------------------------------------------------
-REM [3/5] Cai thu vien
+REM [3/4] Cai thu vien
 REM -------------------------------------------------------
-echo [3/5] Cai dat thu vien (playwright, openpyxl...)...
+echo [3/4] Cai dat thu vien (playwright, openpyxl...)...
 python\python.exe -m pip install -r requirements.txt --quiet
 if errorlevel 1 (
     echo [LOI] Cai thu vien that bai.
@@ -76,21 +76,13 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM -------------------------------------------------------
-REM [4/5] Cai Playwright Chromium browser
-REM -------------------------------------------------------
-echo [4/5] Cai Chromium browser (co the mat vai phut)...
-python\python.exe -m playwright install chromium
-if errorlevel 1 (
-    echo [LOI] Cai Playwright Chromium that bai.
-    pause
-    exit /b 1
-)
+REM Cai playwright browser driver (khong can tai Chromium - dung Chrome co san)
+python\python.exe -m playwright install-deps chromium >nul 2>&1
 
 REM -------------------------------------------------------
-REM [5/5] Tao thu muc du lieu
+REM [4/4] Tao thu muc du lieu
 REM -------------------------------------------------------
-echo [5/5] Tao thu muc du lieu...
+echo [4/4] Tao thu muc du lieu...
 if not exist "data\inbox"      mkdir "data\inbox"
 if not exist "data\processing" mkdir "data\processing"
 if not exist "data\output"     mkdir "data\output"
@@ -101,6 +93,7 @@ if not exist "logs"            mkdir "logs"
 echo.
 echo ============================================
 echo  Setup hoan tat!
+echo  LUU Y: Can cai Google Chrome de chay app.
 echo  Lan sau chi can double-click launcher.bat
 echo ============================================
 echo.

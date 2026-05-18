@@ -395,6 +395,11 @@ class ScannerApp(tk.Tk):
                     self._log_append(f"❌ Lỗi nghiêm trọng: {payload}")
                     self._start_btn.config(state="normal", text="▶  Bắt đầu Scan")
                     self._status_label.config(text="❌ Scan thất bại")
+                    if "Chrome" in payload or "chrome" in payload.lower():
+                        messagebox.showerror(
+                            "Không tìm thấy Chrome",
+                            payload + "\n\nTải Chrome tại: https://www.google.com/chrome",
+                        )
 
         except queue.Empty:
             pass
