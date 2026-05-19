@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import queue
 import shutil
 import subprocess
@@ -16,8 +17,22 @@ def _base_dir() -> Path:
         return Path(sys._MEIPASS)
     return Path(__file__).parent
 
+
+def _data_dir() -> Path:
+    """Writable directory for logs, inbox, output, etc.
+
+    When frozen as an exe the install dir may not be writable (e.g. Program
+    Files), so redirect to %APPDATA%\\fb-scanner on Windows.
+    """
+    if getattr(sys, "frozen", False):
+        base = Path(os.environ.get("APPDATA", Path.home())) if sys.platform == "win32" else Path.home()
+        return base / "fb-scanner"
+    return Path(__file__).parent
+
+
 BASE_DIR = _base_dir()
 CONFIG_PATH = BASE_DIR / "config.json"
+DATA_DIR = _data_dir()
 
 
 # ---------------------------------------------------------------------------
@@ -31,6 +46,18 @@ def _run_scan(excel_path: Path, profile_path: str | None, msg_queue: queue.Queue
         from src.orchestrator import ensure_local_directories, process_single_input_file
 
         config = load_config(str(CONFIG_PATH))
+
+        # When frozen as exe the install dir is often read-only; redirect all
+        # writable paths to DATA_DIR (%APPDATA%\fb-scanner on Windows).
+        if DATA_DIR != Path(__file__).parent:
+            p = config.paths
+            p.log_dir        = DATA_DIR / "logs"
+            p.inbox_dir      = DATA_DIR / "inbox"
+            p.processing_dir = DATA_DIR / "processing"
+            p.output_dir     = DATA_DIR / "output"
+            p.archive_dir    = DATA_DIR / "archive"
+            p.error_dir      = DATA_DIR / "error"
+
         logger = setup_logging(config.paths.log_dir)
         ensure_local_directories(config)
 
