@@ -8,7 +8,7 @@ from src.config_loader import AppConfig
 from src.excel_reader import InputValidationError, read_channel_tasks
 from src.models import FileProcessResult, ScanStatus
 from src.redirect_resolver import clear_resolve_cache
-from src.result_writer import write_results_to_csv
+from src.result_writer import append_result_to_csv, write_results_to_csv
 
 
 def ensure_local_directories(config: AppConfig) -> None:
@@ -64,12 +64,14 @@ def process_single_input_file(
         results = []
         consecutive_login = 0
         force_stop = False
+        realtime_output_file = config.paths.output_dir / f"scan_output_{processing_file.stem}_realtime.csv"
 
         with scanner:
             for idx, task in enumerate(tasks, start=1):
                 logger.info("[%s/%s] Scanning: %s", idx, total, task.channel_url)
                 result = scanner.scan_channel(task)
                 results.append(result)
+                append_result_to_csv(result, realtime_output_file)
 
                 if result.scan_status == ScanStatus.SUCCESS:
                     success += 1

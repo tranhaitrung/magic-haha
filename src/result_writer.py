@@ -29,6 +29,31 @@ def _build_output_file_path(output_dir: Path, input_name: str) -> Path:
     return output_dir / f"scan_output_{input_name}_{stamp}.csv"
 
 
+def append_result_to_csv(result: ChannelScanResult, output_file: Path) -> None:
+    is_new = not output_file.exists()
+    with output_file.open("a", newline="", encoding="utf-8") as csv_file:
+        writer = csv.writer(csv_file)
+        if is_new:
+            writer.writerow(HEADERS)
+        writer.writerow(
+            [
+                result.channel_url,
+                result.channel_name,
+                result.scan_status.value,
+                result.has_shopee_affiliate,
+                result.has_eco_link,
+                result.matched_post_url,
+                (result.matched_comment_text or "")[:300],
+                result.original_comment_link,
+                result.redirect_chain,
+                result.final_url,
+                result.detected_domain,
+                result.scanned_at,
+                result.error_message,
+            ]
+        )
+
+
 def write_results_to_csv(results: list[ChannelScanResult], output_dir: Path, input_basename: str) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     output_file = _build_output_file_path(output_dir, input_basename)
